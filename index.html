@@ -320,29 +320,10 @@ function downloadQR() {
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
-
 function showResult(photo, name, cat, ts, id) {
   document.getElementById('gen-page').style.display = 'none';
   document.getElementById('result-page').classList.add('show');
-  
-  const resultPhoto = document.getElementById('result-photo');
-  
-  // Handle photo URL - if it's a Google Drive URL, it should work directly
-  if (photo && photo.startsWith('http')) {
-    resultPhoto.src = photo;
-  } else if (photo && photo.startsWith('data:')) {
-    resultPhoto.src = photo; // For preview mode
-  } else {
-    resultPhoto.src = ''; // No photo available
-  }
-  
-  // Add error handling for broken images
-  resultPhoto.onerror = function() {
-    console.error('Failed to load photo:', photo);
-    this.src = ''; // Clear broken image
-    this.alt = 'Photo unavailable';
-  };
-  
+  document.getElementById('result-photo').src = photo;
   document.getElementById('result-name').textContent = name;
   const catEl = document.getElementById('result-cat');
   catEl.textContent = cat || '';
@@ -350,6 +331,58 @@ function showResult(photo, name, cat, ts, id) {
   document.getElementById('result-id-label').innerHTML = id ? 'ID: <strong>' + id + '</strong>' : '';
   document.getElementById('result-ts').textContent = ts ? 'Registered: ' + ts : '';
   document.getElementById('result-footer').textContent = name + ' · TOOL ID';
+}
+
+function previewResult() {
+  // Use stored preview data (just generated)
+  const photo = sessionStorage.getItem('toolid_preview_photo');
+  const name  = sessionStorage.getItem('toolid_preview_name');
+  const cat   = sessionStorage.getItem('toolid_preview_cat');
+  const ts    = sessionStorage.getItem('toolid_preview_ts');
+  const id    = sessionStorage.getItem('toolid_preview_id');
+  if (!photo || !name) return;
+  history.pushState({}, '', '?preview=1');
+  showResult(photo, name, cat, ts, id);
+}
+
+function goBack() {
+  document.getElementById('result-page').classList.remove('show');
+  document.getElementById('gen-page').style.display = 'flex';
+  history.pushState({}, '', location.pathname);
+}
+
+// ── Handle QR scan: ?id=XXXX ──
+async function handleScan(toolId) {
+  if (!IS_CONFIGURED) {
+    // Fallback: show whatever is in sessionStorage
+    const photo = sessionStorage.getItem('toolid_preview_photo');
+    const name  = sessionStorage.getItem('toolid_preview_name');
+    const cat   = sessionStorage.getItem('toolid_preview_cat');
+    const ts    = sessionStorage.getItem('toolid_preview_ts');
+    const id    = sessionStorage.getItem('toolid_preview_id');
+    if (photo && name) showResult(photo, name, cat, ts, id);
+    return;
+  }
+
+  document.getElementById('loading-overlay').classList.remove('hidden');
+  document.getElementById('gen-page').style.display = 'none';
+
+  try {
+    const url = APPS_SCRIPT_URL + '?id=' + encodeURIComponent(toolId);
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    document.getElementById('loading-overlay').classList.add('hidden');
+
+    if (!data.success) throw new Error(data.error || 'Record not found');
+
+    showResult(data.photo, data.name, data.cat, data.ts, data.id);
+
+  } catch (err) {
+    document.getElementById('loading-overlay').classList.add('hidden');
+    document.getElementById('gen-page').style.display = 'flex';
+    showNotice('❌ Could not load tool data: ' + err.message, 'err');
+  }
 }
 
 // ── Router ──
