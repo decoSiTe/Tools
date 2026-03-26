@@ -369,7 +369,7 @@ async function handleScan(toolId) {
   document.getElementById('gen-page').style.display = 'none';
 
   try {
-    const pageUrl = APPS_SCRIPT_URL + '?id=' + encodeURIComponent(toolId);
+    const url = APPS_SCRIPT_URL + '?id=' + encodeURIComponent(toolId);
     const resp = await fetch(url);
     const data = await resp.json();
 
