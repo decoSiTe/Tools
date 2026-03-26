@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
+:root{
   --bg:#080c10;--surface:#0f1519;--surface2:#161e25;
   --border:#1e2d38;--accent:#00d4ff;--accent2:#ff6b35;
   --text:#e8f4f8;--muted:#4a6274;--success:#00e5a0;--error:#ff4d6d;
@@ -27,39 +27,40 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .step-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .step-label{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
 .field-block{margin-bottom:28px;}
-.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color 0.25s,background 0.25s;position:relative;overflow:hidden;background:var(--surface2);}
+.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;position:relative;overflow:hidden;background:var(--surface2);}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(0,212,255,0.04);}
 .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .upload-icon{font-size:2.2rem;margin-bottom:10px;}
-.upload-zone p{color:var(--muted);font-size:0.82rem;line-height:1.5;}
+.upload-zone p{color:var(--muted);font-size:.82rem;line-height:1.5;}
 .upload-zone p strong{color:var(--accent);}
 .preview-thumb{display:none;width:100%;border-radius:10px;object-fit:cover;max-height:180px;border:1px solid var(--border);}
 .preview-thumb.show{display:block;}
-.change-photo{margin-top:10px;font-size:0.72rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-align:center;display:none;}
+.change-photo{margin-top:10px;font-size:.72rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-align:center;display:none;}
 .change-photo.show{display:block;}
-.text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.92rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s,box-shadow .2s;}
 .text-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,0.08);}
 .text-input::placeholder{color:var(--muted);}
-.gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),#0099cc);border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.12em;color:#000;cursor:pointer;transition:transform 0.15s,box-shadow 0.2s,opacity 0.2s;box-shadow:0 8px 32px rgba(0,212,255,0.2);}
+.gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),#0099cc);border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.12em;color:#000;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s;box-shadow:0 8px 32px rgba(0,212,255,0.2);}
 .gen-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,255,0.35);}
 .gen-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.saving-bar{display:none;align-items:center;justify-content:center;gap:10px;margin-top:18px;font-size:0.8rem;color:var(--muted);}
+.saving-bar{display:none;align-items:center;justify-content:center;gap:10px;margin-top:18px;font-size:.8rem;color:var(--muted);}
 .saving-bar.show{display:flex;}
-.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.notice{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:0.78rem;display:none;}
+.notice{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.78rem;display:none;line-height:1.5;}
 .notice.show{display:block;}
 .notice.ok{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--success);}
 .notice.err{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:var(--error);}
-#qr-result{display:none;flex-direction:column;align-items:center;gap:18px;margin-top:36px;animation:rise 0.4s ease both;}
+#qr-result{display:none;flex-direction:column;align-items:center;gap:18px;margin-top:36px;animation:rise .4s ease both;}
 #qr-result.show{display:flex;}
 @keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 .qr-wrap{background:#fff;padding:16px;border-radius:16px;box-shadow:0 0 0 1px var(--border),0 20px 60px rgba(0,0,0,0.5);}
 #qrcode canvas,#qrcode img{display:block;}
-.qr-caption{text-align:center;font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);line-height:1.8;}
+.qr-caption{text-align:center;font-size:.74rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);line-height:1.8;}
 .qr-caption span{color:var(--success);font-weight:600;}
+.qr-hint{font-size:.72rem;color:var(--muted);text-align:center;line-height:1.6;max-width:280px;}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.ghost-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:10px 22px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+.ghost-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:10px 22px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:border-color .2s,color .2s;}
 .ghost-btn:hover{border-color:var(--accent);color:var(--accent);}
 .ghost-btn.hl{border-color:var(--accent2);color:var(--accent2);}
 .ghost-btn.hl:hover{background:rgba(255,107,53,0.08);}
@@ -67,68 +68,68 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 /* ── RESULT PAGE ── */
 #result-page{display:none;min-height:100vh;background:var(--bg);position:relative;z-index:1;}
 #result-page.show{display:block;}
-.result-nav{padding:20px 28px 0;}
-.back-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.78rem;cursor:pointer;transition:color 0.2s,border-color 0.2s;}
+.result-nav{padding:20px 24px 0;display:flex;align-items:center;gap:16px;}
+.back-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;cursor:pointer;transition:color .2s,border-color .2s;}
 .back-btn:hover{color:var(--text);border-color:var(--muted);}
 
-/* Photo hero — clickable for zoom */
-.result-hero{position:relative;width:100%;overflow:hidden;background:#111;min-height:260px;cursor:zoom-in;}
-.result-hero img{width:100%;display:block;object-fit:cover;max-height:72vh;opacity:0.92;transition:transform 0.3s,opacity 0.3s;}
-.result-hero:hover img{transform:scale(1.02);opacity:1;}
-.hero-overlay{position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(8,12,16,1) 0%,rgba(8,12,16,0.65) 50%,transparent 100%);pointer-events:none;}
-.hero-badge{position:absolute;bottom:0;left:0;right:0;padding:28px 28px 32px;pointer-events:none;}
-.owner-label{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:block;}
-.owner-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,8vw,4rem);letter-spacing:0.04em;line-height:1;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.8);}
-.owner-cat{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:5px;letter-spacing:0.08em;}
-
-/* zoom hint badge */
-.zoom-hint{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:5px 11px;font-size:0.68rem;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:5px;pointer-events:none;backdrop-filter:blur(6px);}
-
-/* photo placeholder when not loaded */
-.photo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:12px;color:var(--muted);font-size:0.8rem;}
-.photo-placeholder .icon{font-size:2.4rem;opacity:0.4;}
-
-.id-strip{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap;}
-.id-pill{display:flex;align-items:center;gap:8px;font-size:0.74rem;color:var(--muted);}
+/* HERO PHOTO — tap to zoom */
+.result-hero{position:relative;width:100%;overflow:hidden;background:#111;margin-top:20px;cursor:zoom-in;}
+.result-hero img{width:100%;display:block;object-fit:cover;max-height:65vh;transition:transform .3s ease,opacity .3s;}
+.result-hero img.loaded{opacity:1;}
+.result-hero img.error-state{opacity:0.15;}
+.photo-error-msg{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:.82rem;pointer-events:none;}
+.photo-error-msg.show{display:flex;}
+.photo-error-msg span{font-size:2.5rem;}
+.hero-overlay{position:absolute;bottom:0;left:0;right:0;height:62%;background:linear-gradient(to top,rgba(8,12,16,1) 0%,rgba(8,12,16,0.7) 45%,transparent 100%);pointer-events:none;}
+.hero-badge{position:absolute;bottom:0;left:0;right:0;padding:24px 24px 28px;pointer-events:none;}
+.owner-label{font-size:.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;display:block;}
+.owner-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,8vw,4rem);letter-spacing:0.04em;line-height:1;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.9);}
+.owner-cat{font-size:.78rem;color:rgba(255,255,255,0.5);margin-top:5px;letter-spacing:0.08em;}
+.zoom-hint{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:5px 12px;font-size:.65rem;color:rgba(255,255,255,0.55);letter-spacing:0.08em;pointer-events:none;backdrop-filter:blur(6px);}
+.id-strip{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap;}
+.id-pill{display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);}
 .pip{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .id-pill strong{color:var(--text);font-weight:600;}
-.result-footer{text-align:center;padding:36px 24px 48px;color:var(--muted);font-size:0.68rem;letter-spacing:0.1em;}
+.result-footer{text-align:center;padding:32px 24px 48px;color:var(--muted);font-size:.68rem;letter-spacing:0.1em;}
 
-/* ── LIGHTBOX ── */
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:200;display:none;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn 0.2s ease;}
-.lightbox.open{display:flex;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.lightbox img{max-width:95vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 0 80px rgba(0,0,0,0.8);animation:zoomIn 0.25s cubic-bezier(.34,1.56,.64,1);}
-@keyframes zoomIn{from{transform:scale(0.85)}to{transform:scale(1)}}
-.lightbox-close{position:absolute;top:18px;right:22px;font-size:1.8rem;color:rgba(255,255,255,0.6);cursor:pointer;line-height:1;transition:color 0.15s;}
-.lightbox-close:hover{color:#fff;}
+/* ── LIGHTBOX (tap to zoom) ── */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:999;display:none;align-items:center;justify-content:center;cursor:zoom-out;animation:lbIn .2s ease;}
+#lightbox.open{display:flex;}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+#lightbox img{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:4px;user-select:none;touch-action:pinch-zoom;}
+#lightbox-close{position:absolute;top:18px;right:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;cursor:pointer;transition:background .2s;}
+#lightbox-close:hover{background:rgba(255,255,255,0.2);}
 
-/* loading overlay */
-.loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
-.loading-overlay .spin{width:36px;height:36px;border-width:3px;}
-.loading-overlay p{color:var(--muted);font-size:0.82rem;letter-spacing:0.1em;}
-.loading-overlay.hidden{display:none;}
+/* ── LOADING OVERLAY ── */
+#loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+#loading-overlay.show{display:flex;}
+#loading-overlay .spin{width:36px;height:36px;border-width:3px;}
+#loading-overlay p{color:var(--muted);font-size:.82rem;letter-spacing:0.1em;}
 </style>
 </head>
 <body>
 
-<div class="loading-overlay hidden" id="loading-overlay">
+<!-- Loading -->
+<div class="loading-overlay" id="loading-overlay">
   <div class="spin"></div>
   <p>Loading tool data…</p>
 </div>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
-  <img id="lightbox-img" src="" alt="Tool photo">
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <div id="lightbox-close" onclick="closeLightbox()">✕</div>
+  <img id="lightbox-img" src="" alt="Tool photo zoomed">
 </div>
 
-<!-- GENERATOR PAGE -->
+<!-- ══════════════════════════════════
+     GENERATOR PAGE
+══════════════════════════════════ -->
 <div id="gen-page">
   <div class="logo">TOOL<span>ID</span></div>
   <div class="tagline">Upload · Name · Generate · Scan</div>
   <div class="card">
+    <!-- Step 1: Photo -->
     <div class="field-block">
       <div class="step"><div class="step-num">1</div><div class="step-label">Upload Tool Photo</div></div>
       <div class="upload-zone" id="upload-zone">
@@ -141,20 +142,31 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       </div>
       <div class="change-photo" id="change-photo" onclick="resetPhoto()">↺ Change photo</div>
     </div>
+    <!-- Step 2: Name -->
     <div class="field-block">
       <div class="step"><div class="step-num">2</div><div class="step-label">Owner / Tool Name</div></div>
-      <input type="text" class="text-input" id="input-name" placeholder="e.g. Juan Dela Cruz">
+      <input type="text" class="text-input" id="input-name" placeholder="e.g. Ferlin Mendoza">
     </div>
+    <!-- Step 3: Category -->
     <div class="field-block">
       <div class="step"><div class="step-num">3</div><div class="step-label">Category (optional)</div></div>
       <input type="text" class="text-input" id="input-cat" placeholder="e.g. Culinary Tools · Baking Kit">
     </div>
+    <!-- Apps Script URL -->
+    <div class="field-block">
+      <div class="step"><div class="step-num">4</div><div class="step-label">Apps Script URL</div></div>
+      <input type="text" class="text-input" id="input-url"
+        placeholder="https://script.google.com/macros/s/…/exec"
+        value="https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec">
+      <div style="margin-top:7px;font-size:.72rem;color:var(--muted);">Your deployed Google Apps Script web app URL</div>
+    </div>
     <button class="gen-btn" id="gen-btn" onclick="generate()" disabled>GENERATE &amp; SAVE QR CODE</button>
-    <div class="saving-bar" id="saving-bar"><div class="spin"></div> Saving to Google Sheets…</div>
+    <div class="saving-bar" id="saving-bar"><div class="spin"></div>&nbsp;Saving…</div>
     <div class="notice" id="notice"></div>
     <div id="qr-result">
-      <div class="qr-caption">QR code ready — <span>✓ Saved to Google Sheets</span></div>
+      <div class="qr-caption">QR code ready — <span>✓ Photo saved & linked</span></div>
       <div class="qr-wrap"><div id="qrcode"></div></div>
+      <div class="qr-hint">📱 Scan with any camera app — photo will load instantly</div>
       <div class="btn-row">
         <button class="ghost-btn" onclick="downloadQR()">↓ Save QR PNG</button>
         <button class="ghost-btn hl" onclick="previewResult()">👁 Preview Result</button>
@@ -163,17 +175,16 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   </div>
 </div>
 
-<!-- RESULT PAGE (shown when QR is scanned) -->
+<!-- ══════════════════════════════════
+     RESULT PAGE (scanned)
+══════════════════════════════════ -->
 <div id="result-page">
   <div class="result-nav">
     <button class="back-btn" onclick="goBack()">← Generator</button>
   </div>
   <div class="result-hero" id="result-hero" onclick="openLightbox()">
-    <div class="photo-placeholder" id="photo-placeholder">
-      <div class="icon">🖼</div>
-      <span>Loading photo…</span>
-    </div>
-    <img id="result-photo" src="" alt="Tool photo" style="display:none" onload="onPhotoLoaded()" onerror="onPhotoError()">
+    <img id="result-photo" src="" alt="Tool photo" style="opacity:0;">
+    <div class="photo-error-msg" id="photo-error-msg"><span>🔧</span>Photo not available</div>
     <div class="hero-overlay"></div>
     <div class="hero-badge">
       <span class="owner-label">Tool Owner</span>
@@ -191,43 +202,42 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec';
-// ─────────────────────────────────────────────
-
+// ── STATE ──
 let photoDataURL = null;
-let currentPhotoUrl = null; // Drive URL for lightbox
+let currentId = null;
+let currentPhoto = null; // for lightbox
 
-const photoInput        = document.getElementById('photo-input');
-const uploadZone        = document.getElementById('upload-zone');
-const previewThumb      = document.getElementById('preview-thumb');
+// ── UPLOAD ──
+const photoInput      = document.getElementById('photo-input');
+const uploadZone      = document.getElementById('upload-zone');
+const previewThumb    = document.getElementById('preview-thumb');
 const uploadPlaceholder = document.getElementById('upload-placeholder');
-const changePhotoEl     = document.getElementById('change-photo');
-const genBtn            = document.getElementById('gen-btn');
-const savingBar         = document.getElementById('saving-bar');
-const noticeEl          = document.getElementById('notice');
+const changePhotoEl   = document.getElementById('change-photo');
+const genBtn          = document.getElementById('gen-btn');
+const savingBar       = document.getElementById('saving-bar');
+const noticeEl        = document.getElementById('notice');
 
-photoInput.addEventListener('change', e => { if (e.target.files[0]) readPhoto(e.target.files[0]); });
-uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+photoInput.addEventListener('change', e => { if(e.target.files[0]) readPhoto(e.target.files[0]); });
+uploadZone.addEventListener('dragover',  e => { e.preventDefault(); uploadZone.classList.add('drag'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
 uploadZone.addEventListener('drop', e => {
   e.preventDefault(); uploadZone.classList.remove('drag');
   const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) readPhoto(f);
+  if(f && f.type.startsWith('image/')) readPhoto(f);
 });
 
 function readPhoto(file) {
-  const img = new Image();
-  const reader = new FileReader();
+  const img = new Image(), reader = new FileReader();
   reader.onload = ev => {
     img.onload = () => {
-      const MAX = 800;
+      // Resize to max 900px — keep quality high for display
+      const MAX = 900;
       let w = img.width, h = img.height;
-      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      photoDataURL = canvas.toDataURL('image/jpeg', 0.82);
+      if(w > MAX){ h = Math.round(h * MAX / w); w = MAX; }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      photoDataURL = c.toDataURL('image/jpeg', 0.88);
       previewThumb.src = photoDataURL;
       previewThumb.classList.add('show');
       uploadPlaceholder.style.display = 'none';
@@ -240,10 +250,8 @@ function readPhoto(file) {
 }
 
 function resetPhoto() {
-  photoDataURL = null;
-  photoInput.value = '';
-  previewThumb.classList.remove('show');
-  previewThumb.src = '';
+  photoDataURL = null; photoInput.value = '';
+  previewThumb.classList.remove('show'); previewThumb.src = '';
   uploadPlaceholder.style.display = '';
   changePhotoEl.classList.remove('show');
   checkReady();
@@ -259,138 +267,116 @@ function showNotice(msg, type) {
   noticeEl.className = 'notice show ' + type;
 }
 
+// ── GENERATE & SAVE ──
 async function generate() {
   const name = document.getElementById('input-name').value.trim();
   const cat  = document.getElementById('input-cat').value.trim();
-  const ts   = new Date().toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+  const url  = document.getElementById('input-url').value.trim();
+  const ts   = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+
+  if(!url || !url.startsWith('https://script.google.com')) {
+    showNotice('⚠️ Please enter a valid Apps Script URL in Step 4.', 'err');
+    return;
+  }
 
   genBtn.disabled = true;
   savingBar.classList.add('show');
   noticeEl.className = 'notice';
 
   try {
+    // Send photo as base64 — Apps Script stores it in Drive & Sheets
     const payload = { name, cat, ts, photo: photoDataURL };
-    const resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const resp = await fetch(url, { method:'POST', body: JSON.stringify(payload) });
     const data = await resp.json();
-    if (!data.success) throw new Error(data.error || 'Unknown error');
+    if(!data.success) throw new Error(data.error || 'Unknown error');
 
-    const currentToolId = data.id;
-    const qrURL = location.origin + location.pathname + '?id=' + encodeURIComponent(currentToolId);
+    currentId = data.id;
+
+    // QR URL: points back to this page with the ID
+    const pageURL = location.origin + location.pathname;
+    const qrURL   = pageURL + '?id=' + encodeURIComponent(currentId) + '&url=' + encodeURIComponent(url);
 
     const container = document.getElementById('qrcode');
     container.innerHTML = '';
-    new QRCode(container, { text: qrURL, width: 220, height: 220, colorDark: '#000', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.H });
+    new QRCode(container, {
+      text: qrURL, width:220, height:220,
+      colorDark:'#000', colorLight:'#fff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
 
-    sessionStorage.setItem('toolid_preview_photo', data.photoUrl || photoDataURL);
-    sessionStorage.setItem('toolid_preview_name', name);
-    sessionStorage.setItem('toolid_preview_cat', cat);
-    sessionStorage.setItem('toolid_preview_ts', ts);
-    sessionStorage.setItem('toolid_preview_id', currentToolId);
+    // Cache for instant preview
+    sessionStorage.setItem('tip_photo', photoDataURL);
+    sessionStorage.setItem('tip_name',  name);
+    sessionStorage.setItem('tip_cat',   cat);
+    sessionStorage.setItem('tip_ts',    ts);
+    sessionStorage.setItem('tip_id',    currentId);
+    sessionStorage.setItem('tip_url',   url);
 
     savingBar.classList.remove('show');
-    showNotice('✓ Saved — ID: ' + currentToolId, 'ok');
-    const res = document.getElementById('qr-result');
-    res.classList.add('show');
-    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    showNotice('✓ Saved! ID: ' + currentId + ' — QR will load photo on any device.', 'ok');
+    document.getElementById('qr-result').classList.add('show');
+    document.getElementById('qr-result').scrollIntoView({behavior:'smooth',block:'nearest'});
 
-  } catch (err) {
+  } catch(err) {
     savingBar.classList.remove('show');
-    showNotice('❌ Save failed: ' + err.message, 'err');
+    showNotice('❌ Error: ' + err.message, 'err');
     genBtn.disabled = false;
   }
 }
 
 function downloadQR() {
   const canvas = document.querySelector('#qrcode canvas');
-  if (!canvas) return;
+  if(!canvas) return;
   const a = document.createElement('a');
   a.download = 'toolid-qr.png';
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
 
-// Convert any Drive URL to a direct-load URL (fixes CORS / redirect issues)
-function toDriveDirectUrl(url) {
-  if (!url) return '';
-  // Already a direct export URL
-  if (url.includes('export=view')) return url;
-  // Extract file ID from various Drive URL formats
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (match) return 'https://drive.google.com/uc?export=view&id=' + match[1];
-  return url;
-}
-
+// ── RESULT PAGE ──
 function showResult(photo, name, cat, ts, id) {
   document.getElementById('gen-page').style.display = 'none';
+  document.getElementById('loading-overlay').style.display = 'none';
   document.getElementById('result-page').classList.add('show');
-  document.getElementById('result-name').textContent = name;
 
+  // Set text
+  document.getElementById('result-name').textContent = name;
   const catEl = document.getElementById('result-cat');
-  catEl.textContent = cat || '';
-  catEl.style.display = cat ? 'block' : 'none';
+  catEl.textContent = cat || ''; catEl.style.display = cat ? 'block' : 'none';
   document.getElementById('result-id-label').innerHTML = id ? 'ID: <strong>' + id + '</strong>' : '';
   document.getElementById('result-ts').textContent = ts ? 'Registered: ' + ts : '';
   document.getElementById('result-footer').textContent = name + ' · TOOL ID';
 
-  // Load photo — use a proxy-friendly URL for Drive images
-  const photoEl      = document.getElementById('result-photo');
-  const placeholder  = document.getElementById('photo-placeholder');
-  const directUrl    = toDriveDirectUrl(photo);
-  currentPhotoUrl    = directUrl;
+  // Load photo
+  currentPhoto = photo;
+  const imgEl = document.getElementById('result-photo');
+  const errEl = document.getElementById('photo-error-msg');
 
-  placeholder.innerHTML = '<div class="icon">🖼</div><span>Loading photo…</span>';
-  placeholder.style.display = 'flex';
-  photoEl.style.display = 'none';
-
-  if (directUrl) {
-    photoEl.src = directUrl;
-  } else {
-    placeholder.innerHTML = '<div class="icon">📷</div><span>No photo available</span>';
+  if(!photo) {
+    errEl.classList.add('show');
+    imgEl.style.opacity = 0;
+    return;
   }
+
+  imgEl.onload = () => {
+    imgEl.style.opacity = 1;
+    imgEl.style.transition = 'opacity 0.5s';
+    errEl.classList.remove('show');
+  };
+  imgEl.onerror = () => {
+    imgEl.style.opacity = 0.1;
+    errEl.classList.add('show');
+  };
+  imgEl.src = photo;
 }
 
-function onPhotoLoaded() {
-  document.getElementById('photo-placeholder').style.display = 'none';
-  document.getElementById('result-photo').style.display = 'block';
-}
-
-function onPhotoError() {
-  // Drive images sometimes block direct embedding — try thumbnail fallback
-  const photoEl = document.getElementById('result-photo');
-  const url = photoEl.src;
-  const match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (match && !photoEl.dataset.triedThumb) {
-    photoEl.dataset.triedThumb = '1';
-    photoEl.src = 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w800';
-  } else {
-    document.getElementById('photo-placeholder').innerHTML = '<div class="icon">🖼</div><span>Photo unavailable</span>';
-  }
-}
-
-// ── Lightbox ────────────────────────────────
-function openLightbox() {
-  const url = currentPhotoUrl || document.getElementById('result-photo').src;
-  if (!url || document.getElementById('result-photo').style.display === 'none') return;
-  document.getElementById('lightbox-img').src = url;
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-// ── Navigation ───────────────────────────────
 function previewResult() {
-  const photo = sessionStorage.getItem('toolid_preview_photo');
-  const name  = sessionStorage.getItem('toolid_preview_name');
-  const cat   = sessionStorage.getItem('toolid_preview_cat');
-  const ts    = sessionStorage.getItem('toolid_preview_ts');
-  const id    = sessionStorage.getItem('toolid_preview_id');
-  if (!name) return;
+  const photo = sessionStorage.getItem('tip_photo');
+  const name  = sessionStorage.getItem('tip_name');
+  const cat   = sessionStorage.getItem('tip_cat');
+  const ts    = sessionStorage.getItem('tip_ts');
+  const id    = sessionStorage.getItem('tip_id');
+  if(!photo || !name) return;
   history.pushState({}, '', '?preview=1');
   showResult(photo, name, cat, ts, id);
 }
@@ -401,37 +387,57 @@ function goBack() {
   history.pushState({}, '', location.pathname);
 }
 
-// ── QR Scan handler — fetch from Sheets ──────
-async function handleScan(toolId) {
-  document.getElementById('loading-overlay').classList.remove('hidden');
+// ── LIGHTBOX ──
+function openLightbox() {
+  if(!currentPhoto) return;
+  document.getElementById('lightbox-img').src = currentPhoto;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+// ── ROUTER ──
+async function handleScan(toolId, scriptUrl) {
+  if(!scriptUrl) {
+    // Try sessionStorage fallback
+    const p = sessionStorage.getItem('tip_photo');
+    const n = sessionStorage.getItem('tip_name');
+    if(p && n) showResult(p, n, sessionStorage.getItem('tip_cat'), sessionStorage.getItem('tip_ts'), sessionStorage.getItem('tip_id'));
+    return;
+  }
+
   document.getElementById('gen-page').style.display = 'none';
+  document.getElementById('loading-overlay').style.display = 'flex';
+
   try {
-    const resp = await fetch(APPS_SCRIPT_URL + '?id=' + encodeURIComponent(toolId));
+    const fetchURL = scriptUrl + '?id=' + encodeURIComponent(toolId);
+    const resp = await fetch(fetchURL);
     const data = await resp.json();
-    document.getElementById('loading-overlay').classList.add('hidden');
-    if (!data.success) throw new Error(data.error || 'Record not found');
+    if(!data.success) throw new Error(data.error || 'Not found');
+    // data.photo should be base64 string returned by Apps Script
     showResult(data.photo, data.name, data.cat, data.ts, data.id);
-  } catch (err) {
-    document.getElementById('loading-overlay').classList.add('hidden');
+  } catch(err) {
+    document.getElementById('loading-overlay').style.display = 'none';
     document.getElementById('gen-page').style.display = 'flex';
     showNotice('❌ Could not load: ' + err.message, 'err');
   }
 }
 
-// ── Router ───────────────────────────────────
-const params    = new URLSearchParams(location.search);
-const scanId    = params.get('id');
-const isPreview = params.get('preview');
+const params   = new URLSearchParams(location.search);
+const scanId   = params.get('id');
+const scanUrl  = params.get('url');
+const preview  = params.get('preview');
 
-if (scanId) {
-  handleScan(scanId);
-} else if (isPreview === '1') {
-  const photo = sessionStorage.getItem('toolid_preview_photo');
-  const name  = sessionStorage.getItem('toolid_preview_name');
-  const cat   = sessionStorage.getItem('toolid_preview_cat');
-  const ts    = sessionStorage.getItem('toolid_preview_ts');
-  const id    = sessionStorage.getItem('toolid_preview_id');
-  if (photo && name) showResult(photo, name, cat, ts, id);
+if(scanId) {
+  handleScan(scanId, scanUrl);
+} else if(preview === '1') {
+  const p = sessionStorage.getItem('tip_photo');
+  const n = sessionStorage.getItem('tip_name');
+  if(p && n) showResult(p, n, sessionStorage.getItem('tip_cat'), sessionStorage.getItem('tip_ts'), sessionStorage.getItem('tip_id'));
 }
 </script>
 </body>
