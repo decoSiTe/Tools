@@ -112,8 +112,8 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div class="tagline">Upload · Name · Generate · Scan</div>
   <div class="card">
 
-    <!-- ⚠️ Config banner — hidden once APPS_SCRIPT_URL is set -->
-    <div class="cfg-banner" id="cfg-banner">
+   <!-- ⚠️ Config banner — hidden once APPS_SCRIPT_URL is set -->
+  <div class="cfg-banner" id="cfg-banner">
       <strong>⚙️ Setup required:</strong> Replace <code>YOUR_APPS_SCRIPT_URL</code> at the top of this file's &lt;script&gt; with your deployed Google Apps Script Web App URL. See <code>Code.gs</code> for instructions.
     </div>
 
@@ -186,7 +186,7 @@ const IS_CONFIGURED = APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL';
 // Hide config banner if URL is set
 if (IS_CONFIGURED) document.getElementById('cfg-banner').style.display = 'none';
 
-let photoDataURL = null;
+let photoDataURL = "";
 let currentToolId = null;
 
 const photoInput     = document.getElementById('photo-input');
