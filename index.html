@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tool ID – QR Generator</title>
-<script src="https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -114,7 +114,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 
     <!-- ⚠️ Config banner — hidden once APPS_SCRIPT_URL is set -->
     <div class="cfg-banner" id="cfg-banner">
-      <strong>⚙️ Setup required:</strong> Replace <code>https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec</code> at the top of this file's &lt;script&gt; with your deployed Google Apps Script Web App URL. See <code>Code.gs</code> for instructions.
+      <strong>⚙️ Setup required:</strong> Replace <code>YOUR_APPS_SCRIPT_URL</code> at the top of this file's &lt;script&gt; with your deployed Google Apps Script Web App URL. See <code>Code.gs</code> for instructions.
     </div>
 
     <div class="field-block">
@@ -178,7 +178,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 // ─────────────────────────────────────────────
 // ⚙️  CONFIGURATION — replace with your URL
 // ─────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec';
 // ─────────────────────────────────────────────
 
 const IS_CONFIGURED = APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL';
