@@ -10,12 +10,13 @@
 :root {
   --bg:#080c10;--surface:#0f1519;--surface2:#161e25;
   --border:#1e2d38;--accent:#00d4ff;--accent2:#ff6b35;
-  --text:#e8f4f8;--muted:#4a6274;--success:#00e5a0;
+  --text:#e8f4f8;--muted:#4a6274;--success:#00e5a0;--error:#ff4d6d;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.01) 2px,rgba(0,212,255,0.01) 4px);pointer-events:none;z-index:0;}
 
+/* ── GENERATOR PAGE ── */
 #gen-page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,5.5rem);letter-spacing:0.08em;line-height:1;margin-bottom:6px;}
 .logo span{color:var(--accent);}
@@ -42,6 +43,17 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .gen-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),#0099cc);border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.12em;color:#000;cursor:pointer;transition:transform 0.15s,box-shadow 0.2s,opacity 0.2s;box-shadow:0 8px 32px rgba(0,212,255,0.2);}
 .gen-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,255,0.35);}
 .gen-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* saving state */
+.saving-bar{display:none;align-items:center;justify-content:center;gap:10px;margin-top:18px;font-size:0.8rem;color:var(--muted);}
+.saving-bar.show{display:flex;}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.notice{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:0.78rem;display:none;}
+.notice.show{display:block;}
+.notice.ok{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--success);}
+.notice.err{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:var(--error);}
+
 #qr-result{display:none;flex-direction:column;align-items:center;gap:18px;margin-top:36px;animation:rise 0.4s ease both;}
 #qr-result.show{display:flex;}
 @keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
@@ -55,7 +67,12 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .ghost-btn.hl{border-color:var(--accent2);color:var(--accent2);}
 .ghost-btn.hl:hover{background:rgba(255,107,53,0.08);}
 
-/* RESULT PAGE */
+/* config banner */
+.cfg-banner{background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.35);border-radius:12px;padding:14px 18px;font-size:0.77rem;color:#ffb085;line-height:1.7;margin-bottom:28px;}
+.cfg-banner strong{color:var(--accent2);}
+.cfg-banner code{background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;font-size:0.75rem;}
+
+/* ── RESULT PAGE ── */
 #result-page{display:none;min-height:100vh;background:var(--bg);position:relative;z-index:1;}
 #result-page.show{display:block;}
 .result-hero{position:relative;width:100%;overflow:hidden;background:#000;max-height:72vh;}
@@ -74,14 +91,32 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .back-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.78rem;cursor:pointer;transition:color 0.2s,border-color 0.2s;}
 .back-btn:hover{color:var(--text);border-color:var(--muted);}
 .result-footer{text-align:center;padding:36px 24px 48px;color:var(--muted);font-size:0.68rem;letter-spacing:0.1em;}
+
+/* loading overlay for scan */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+.loading-overlay .spin{width:36px;height:36px;border-width:3px;}
+.loading-overlay p{color:var(--muted);font-size:0.82rem;letter-spacing:0.1em;}
+.loading-overlay.hidden{display:none;}
 </style>
 </head>
 <body>
+
+<!-- Loading overlay shown while fetching from Sheets -->
+<div class="loading-overlay hidden" id="loading-overlay">
+  <div class="spin"></div>
+  <p>Loading tool data…</p>
+</div>
 
 <div id="gen-page">
   <div class="logo">TOOL<span>ID</span></div>
   <div class="tagline">Upload · Name · Generate · Scan</div>
   <div class="card">
+
+    <!-- ⚠️ Config banner — hidden once APPS_SCRIPT_URL is set -->
+    <div class="cfg-banner" id="cfg-banner">
+      <strong>⚙️ Setup required:</strong> Replace <code>https://script.google.com/macros/s/AKfycbxRIsw58wsxfqaZJeFu4c1tGQra6WT2xzWBw8H_TOQWLRzOfZ6AEmk4XkKjapzFapJ1zw/exec</code> at the top of this file's &lt;script&gt; with your deployed Google Apps Script Web App URL. See <code>Code.gs</code> for instructions.
+    </div>
+
     <div class="field-block">
       <div class="step"><div class="step-num">1</div><div class="step-label">Upload Tool Photo</div></div>
       <div class="upload-zone" id="upload-zone">
@@ -102,9 +137,13 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       <div class="step"><div class="step-num">3</div><div class="step-label">Category (optional)</div></div>
       <input type="text" class="text-input" id="input-cat" placeholder="e.g. Culinary Tools · Baking Kit">
     </div>
-    <button class="gen-btn" id="gen-btn" onclick="generate()" disabled>GENERATE QR CODE</button>
+    <button class="gen-btn" id="gen-btn" onclick="generate()" disabled>GENERATE &amp; SAVE QR CODE</button>
+
+    <div class="saving-bar" id="saving-bar"><div class="spin"></div> Saving to Google Sheets…</div>
+    <div class="notice" id="notice"></div>
+
     <div id="qr-result">
-      <div class="qr-caption">QR code ready — <span>✓ Scan to view photo</span></div>
+      <div class="qr-caption">QR code ready — <span>✓ Saved to Google Sheets</span></div>
       <div class="qr-wrap"><div id="qrcode"></div></div>
       <div class="btn-row">
         <button class="ghost-btn" onclick="downloadQR()">↓ Save QR PNG</button>
@@ -136,35 +175,60 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 </div>
 
 <script>
+// ─────────────────────────────────────────────
+// ⚙️  CONFIGURATION — replace with your URL
+// ─────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';
+// ─────────────────────────────────────────────
+
+const IS_CONFIGURED = APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL';
+
+// Hide config banner if URL is set
+if (IS_CONFIGURED) document.getElementById('cfg-banner').style.display = 'none';
+
 let photoDataURL = null;
+let currentToolId = null;
 
-const photoInput = document.getElementById('photo-input');
-const uploadZone = document.getElementById('upload-zone');
-const previewThumb = document.getElementById('preview-thumb');
+const photoInput     = document.getElementById('photo-input');
+const uploadZone     = document.getElementById('upload-zone');
+const previewThumb   = document.getElementById('preview-thumb');
 const uploadPlaceholder = document.getElementById('upload-placeholder');
-const changePhotoEl = document.getElementById('change-photo');
-const genBtn = document.getElementById('gen-btn');
+const changePhotoEl  = document.getElementById('change-photo');
+const genBtn         = document.getElementById('gen-btn');
+const savingBar      = document.getElementById('saving-bar');
+const noticeEl       = document.getElementById('notice');
 
-photoInput.addEventListener('change', e => { if(e.target.files[0]) readPhoto(e.target.files[0]); });
+photoInput.addEventListener('change', e => { if (e.target.files[0]) readPhoto(e.target.files[0]); });
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
 uploadZone.addEventListener('drop', e => {
   e.preventDefault(); uploadZone.classList.remove('drag');
   const f = e.dataTransfer.files[0];
-  if(f && f.type.startsWith('image/')) readPhoto(f);
+  if (f && f.type.startsWith('image/')) readPhoto(f);
 });
 
 function readPhoto(file) {
-  const r = new FileReader();
-  r.onload = ev => {
-    photoDataURL = ev.target.result;
-    previewThumb.src = photoDataURL;
-    previewThumb.classList.add('show');
-    uploadPlaceholder.style.display = 'none';
-    changePhotoEl.classList.add('show');
-    checkReady();
+  // Resize image to max 800px wide to keep Sheets data manageable
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = ev => {
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      photoDataURL = canvas.toDataURL('image/jpeg', 0.82);
+      previewThumb.src = photoDataURL;
+      previewThumb.classList.add('show');
+      uploadPlaceholder.style.display = 'none';
+      changePhotoEl.classList.add('show');
+      checkReady();
+    };
+    img.src = ev.target.result;
   };
-  r.readAsDataURL(file);
+  reader.readAsDataURL(file);
 }
 
 function resetPhoto() {
@@ -182,33 +246,82 @@ function checkReady() {
   genBtn.disabled = !(photoDataURL && document.getElementById('input-name').value.trim());
 }
 
-function generate() {
+function showNotice(msg, type) {
+  noticeEl.textContent = msg;
+  noticeEl.className = 'notice show ' + type;
+}
+
+async function generate() {
   const name = document.getElementById('input-name').value.trim();
   const cat  = document.getElementById('input-cat').value.trim();
-  const ts   = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-  sessionStorage.setItem('toolid_photo', photoDataURL);
-  sessionStorage.setItem('toolid_name',  name);
-  sessionStorage.setItem('toolid_cat',   cat);
-  sessionStorage.setItem('toolid_ts',    ts);
-  const url = location.origin + location.pathname + '?view=result';
-  const container = document.getElementById('qrcode');
-  container.innerHTML = '';
-  new QRCode(container, {text:url,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
-  const res = document.getElementById('qr-result');
-  res.classList.add('show');
-  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const ts   = new Date().toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+
+  if (!IS_CONFIGURED) {
+    showNotice('⚠️ Please set your Apps Script URL in the code before saving.', 'err');
+    return;
+  }
+
+  genBtn.disabled = true;
+  savingBar.classList.add('show');
+  noticeEl.className = 'notice';
+
+  try {
+    // Save to Google Sheets via Apps Script
+    const payload = { name, cat, ts, photo: photoDataURL };
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json();
+
+    if (!data.success) throw new Error(data.error || 'Unknown error');
+
+    currentToolId = data.id;
+
+    // Build QR URL pointing to this page with the tool ID
+    const qrURL = location.origin + location.pathname + '?id=' + encodeURIComponent(currentToolId);
+
+    // Generate QR code
+    const container = document.getElementById('qrcode');
+    container.innerHTML = '';
+    new QRCode(container, {
+      text: qrURL,
+      width: 220, height: 220,
+      colorDark: '#000', colorLight: '#fff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Store for preview (no sessionStorage needed — data is in Sheets)
+    sessionStorage.setItem('toolid_preview_photo', photoDataURL);
+    sessionStorage.setItem('toolid_preview_name', name);
+    sessionStorage.setItem('toolid_preview_cat', cat);
+    sessionStorage.setItem('toolid_preview_ts', ts);
+    sessionStorage.setItem('toolid_preview_id', currentToolId);
+
+    savingBar.classList.remove('show');
+    showNotice('✓ Saved to Google Sheets — ID: ' + currentToolId, 'ok');
+
+    const res = document.getElementById('qr-result');
+    res.classList.add('show');
+    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch (err) {
+    savingBar.classList.remove('show');
+    showNotice('❌ Save failed: ' + err.message + '. Check your Apps Script URL & permissions.', 'err');
+    genBtn.disabled = false;
+  }
 }
 
 function downloadQR() {
   const canvas = document.querySelector('#qrcode canvas');
-  if(!canvas) return;
+  if (!canvas) return;
   const a = document.createElement('a');
   a.download = 'toolid-qr.png';
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
 
-function showResult(photo, name, cat, ts) {
+function showResult(photo, name, cat, ts, id) {
   document.getElementById('gen-page').style.display = 'none';
   document.getElementById('result-page').classList.add('show');
   document.getElementById('result-photo').src = photo;
@@ -216,18 +329,21 @@ function showResult(photo, name, cat, ts) {
   const catEl = document.getElementById('result-cat');
   catEl.textContent = cat || '';
   catEl.style.display = cat ? 'block' : 'none';
-  document.getElementById('result-id-label').textContent = name;
+  document.getElementById('result-id-label').innerHTML = id ? 'ID: <strong>' + id + '</strong>' : '';
   document.getElementById('result-ts').textContent = ts ? 'Registered: ' + ts : '';
   document.getElementById('result-footer').textContent = name + ' · TOOL ID';
 }
 
 function previewResult() {
-  const name = document.getElementById('input-name').value.trim();
-  const cat  = document.getElementById('input-cat').value.trim();
-  const ts   = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-  if(!photoDataURL || !name) return;
-  history.pushState({}, '', '?view=result');
-  showResult(photoDataURL, name, cat, ts);
+  // Use stored preview data (just generated)
+  const photo = sessionStorage.getItem('toolid_preview_photo');
+  const name  = sessionStorage.getItem('toolid_preview_name');
+  const cat   = sessionStorage.getItem('toolid_preview_cat');
+  const ts    = sessionStorage.getItem('toolid_preview_ts');
+  const id    = sessionStorage.getItem('toolid_preview_id');
+  if (!photo || !name) return;
+  history.pushState({}, '', '?preview=1');
+  showResult(photo, name, cat, ts, id);
 }
 
 function goBack() {
@@ -236,14 +352,55 @@ function goBack() {
   history.pushState({}, '', location.pathname);
 }
 
-// Auto-show result if QR was scanned
+// ── Handle QR scan: ?id=XXXX ──
+async function handleScan(toolId) {
+  if (!IS_CONFIGURED) {
+    // Fallback: show whatever is in sessionStorage
+    const photo = sessionStorage.getItem('toolid_preview_photo');
+    const name  = sessionStorage.getItem('toolid_preview_name');
+    const cat   = sessionStorage.getItem('toolid_preview_cat');
+    const ts    = sessionStorage.getItem('toolid_preview_ts');
+    const id    = sessionStorage.getItem('toolid_preview_id');
+    if (photo && name) showResult(photo, name, cat, ts, id);
+    return;
+  }
+
+  document.getElementById('loading-overlay').classList.remove('hidden');
+  document.getElementById('gen-page').style.display = 'none';
+
+  try {
+    const url = APPS_SCRIPT_URL + '?id=' + encodeURIComponent(toolId);
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    document.getElementById('loading-overlay').classList.add('hidden');
+
+    if (!data.success) throw new Error(data.error || 'Record not found');
+
+    showResult(data.photo, data.name, data.cat, data.ts, data.id);
+
+  } catch (err) {
+    document.getElementById('loading-overlay').classList.add('hidden');
+    document.getElementById('gen-page').style.display = 'flex';
+    showNotice('❌ Could not load tool data: ' + err.message, 'err');
+  }
+}
+
+// ── Router ──
 const params = new URLSearchParams(location.search);
-if(params.get('view') === 'result') {
-  const photo = sessionStorage.getItem('toolid_photo');
-  const name  = sessionStorage.getItem('toolid_name');
-  const cat   = sessionStorage.getItem('toolid_cat');
-  const ts    = sessionStorage.getItem('toolid_ts');
-  if(photo && name) showResult(photo, name, cat, ts);
+const scanId = params.get('id');
+const isPreview = params.get('preview');
+
+if (scanId) {
+  handleScan(scanId);
+} else if (isPreview === '1') {
+  // Coming back via browser history to preview
+  const photo = sessionStorage.getItem('toolid_preview_photo');
+  const name  = sessionStorage.getItem('toolid_preview_name');
+  const cat   = sessionStorage.getItem('toolid_preview_cat');
+  const ts    = sessionStorage.getItem('toolid_preview_ts');
+  const id    = sessionStorage.getItem('toolid_preview_id');
+  if (photo && name) showResult(photo, name, cat, ts, id);
 }
 </script>
 </body>
