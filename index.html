@@ -310,15 +310,21 @@ function downloadQR() {
 }
 
 // Convert any Drive URL to a direct-load URL
-function toDriveDirectUrl(url) {
-  if (!url) return '';
-  if (typeof url !== 'string') return '';
-  // Strip =IMAGE() formula wrapper if Apps Script returned formula text
+// Extract Drive file ID from any Drive URL format
+function getDriveFileId(url) {
+  if (!url || typeof url !== 'string') return null;
   const formulaMatch = url.match(/=IMAGE\("([^"]+)"/);
   if (formulaMatch) url = formulaMatch[1];
-  if (url.includes('export=view')) return url;
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (match) return 'https://drive.google.com/uc?export=view&id=' + match[1];
+  return match ? match[1] : null;
+}
+
+// Get the best loadable URL for an <img> tag
+// Uses thumbnail API which works cross-origin on mobile
+function toDriveDirectUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const id = getDriveFileId(url);
+  if (id) return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1200';
   return url;
 }
 
@@ -357,23 +363,35 @@ function onPhotoLoaded() {
 }
 
 function onPhotoError() {
-  // Drive images sometimes block direct embedding — try thumbnail fallback
   const photoEl = document.getElementById('result-photo');
   const url = photoEl.src;
-  const match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (match && !photoEl.dataset.triedThumb) {
-    photoEl.dataset.triedThumb = '1';
-    photoEl.src = 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w800';
+  // Try progressively different URL formats
+  const id = getDriveFileId(url);
+  if (id && !photoEl.dataset.tried1) {
+    photoEl.dataset.tried1 = '1';
+    photoEl.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800';
+  } else if (id && !photoEl.dataset.tried2) {
+    photoEl.dataset.tried2 = '1';
+    photoEl.src = 'https://lh3.googleusercontent.com/d/' + id;
   } else {
     document.getElementById('photo-placeholder').innerHTML = '<div class="icon">🖼</div><span>Photo unavailable</span>';
+    document.getElementById('photo-placeholder').style.display = 'flex';
   }
 }
 
 // ── Lightbox ────────────────────────────────
 function openLightbox() {
-  const url = currentPhotoUrl || document.getElementById('result-photo').src;
-  if (!url || document.getElementById('result-photo').style.display === 'none') return;
-  document.getElementById('lightbox-img').src = url;
+  const photoEl = document.getElementById('result-photo');
+  if (!photoEl || photoEl.style.display === 'none') return;
+  // Use the exact src that already loaded successfully in the result page
+  const loadedSrc = photoEl.currentSrc || photoEl.src;
+  if (!loadedSrc) return;
+  // For lightbox use higher resolution thumbnail
+  const id = getDriveFileId(loadedSrc) || getDriveFileId(currentPhotoUrl || '');
+  const lightboxUrl = id
+    ? 'https://drive.google.com/thumbnail?id=' + id + '&sz=w2000'
+    : loadedSrc;
+  document.getElementById('lightbox-img').src = lightboxUrl;
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
